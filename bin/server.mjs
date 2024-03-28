@@ -8,7 +8,7 @@ import { readFileSync } from "node:fs";
 import { createServer } from "node:https";
 import { Server } from "socket.io";
 import { Http3Server } from "@fails-components/webtransport";
-import { setupWSConnection } from './utils.js'
+import { setupSocketConnection } from './utils.js'
 
 const host = process.env.HOST || '0.0.0.0'
 const port = process.env.PORT || 3000
@@ -36,7 +36,7 @@ io.on('connection', (socket) => {
   socket.conn.on("upgrade", (transport) => {
     console.log(`transport upgraded to ${transport.name}`);
     if (transport.name === 'webtransport'){
-      setupWSConnection(socket, true)
+      setupSocketConnection(socket, true)
     }
   });
 });

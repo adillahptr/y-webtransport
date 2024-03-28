@@ -16,16 +16,16 @@ const CALLBACK_DEBOUNCE_WAIT = parseInt(process.env.CALLBACK_DEBOUNCE_WAIT)
 const CALLBACK_DEBOUNCE_MAXWAIT = parseInt(
   process.env.CALLBACK_DEBOUNCE_MAXWAIT) || 10000
 
-const wsReadyStateConnecting = 0
-const wsReadyStateOpen = 'open'
-const wsReadyStateClosing = 2 // eslint-disable-line
-const wsReadyStateClosed = 3 // eslint-disable-line
+const socketReadyStateConnecting = 0
+const socketReadyStateOpen = 'open'
+const socketReadyStateClosing = 2 // eslint-disable-line
+const socketReadyStateClosed = 3 // eslint-disable-line
 
 // disable gc when using snapshots!
 const gcEnabled = process.env.GC !== 'false' && process.env.GC !== '0'
 const persistenceDir = process.env.YPERSISTENCE
 /**
- * @type {{bindState: function(string,WSSharedDoc):void, writeState:function(string,WSSharedDoc):Promise<any>, provider: any}|null}
+ * @type {{bindState: function(string,WTSharedDoc):void, writeState:function(string,WTSharedDoc):Promise<any>, provider: any}|null}
  */
 let persistence = null
 if (typeof persistenceDir === 'string') {
@@ -49,21 +49,21 @@ if (typeof persistenceDir === 'string') {
 }
 
 /**
- * @param {{bindState: function(string,WSSharedDoc):void,
- * writeState:function(string,WSSharedDoc):Promise<any>,provider:any}|null} persistence_
+ * @param {{bindState: function(string,WTSharedDoc):void,
+ * writeState:function(string,WTSharedDoc):Promise<any>,provider:any}|null} persistence_
  */
 exports.setPersistence = persistence_ => {
   persistence = persistence_
 }
 
 /**
- * @return {null|{bindState: function(string,WSSharedDoc):void,
- * writeState:function(string,WSSharedDoc):Promise<any>}|null} used persistence layer
+ * @return {null|{bindState: function(string,WTSharedDoc):void,
+ * writeState:function(string,WTSharedDoc):Promise<any>}|null} used persistence layer
  */
 exports.getPersistence = () => persistence
 
 /**
- * @type {Map<string,WSSharedDoc>}
+ * @type {Map<string,WTSharedDoc>}
  */
 const docs = new Map()
 // exporting docs so that others can use it
@@ -77,7 +77,7 @@ const customMessage = 4
 /**
  * @param {Uint8Array} update
  * @param {any} origin
- * @param {WSSharedDoc} doc
+ * @param {WTSharedDoc} doc
  */
 const updateHandler = (update, origin, doc) => {
   const encoder = encoding.createEncoder()
@@ -87,7 +87,7 @@ const updateHandler = (update, origin, doc) => {
   doc.conns.forEach((_, conn) => send(doc, conn, message))
 }
 
-class WSSharedDoc extends Y.Doc {
+class WTSharedDoc extends Y.Doc {
   /**
    * @param {string} name
    */
@@ -152,11 +152,11 @@ class WSSharedDoc extends Y.Doc {
  *
  * @param {string} docname - the name of the Y.Doc to find or create
  * @param {boolean} gc - whether to allow gc on the doc (applies only when created)
- * @return {WSSharedDoc}
+ * @return {WTSharedDoc}
  */
 const getYDoc = (docname, gc = true) => map.setIfUndefined(docs, docname,
   () => {
-    const doc = new WSSharedDoc(docname)
+    const doc = new WTSharedDoc(docname)
     doc.gc = gc
     if (persistence !== null) {
       persistence.bindState(docname, doc)
@@ -169,7 +169,7 @@ exports.getYDoc = getYDoc
 
 /**
  * @param {any} conn
- * @param {WSSharedDoc} doc
+ * @param {WTSharedDoc} doc
  * @param {Uint8Array} message
  */
 const messageListener = (conn, doc, message) => {
@@ -210,7 +210,7 @@ const messageListener = (conn, doc, message) => {
 }
 
 /**
- * @param {WSSharedDoc} doc
+ * @param {WTSharedDoc} doc
  * @param {any} conn
  */
 const closeConn = (doc, conn) => {
@@ -235,13 +235,13 @@ const closeConn = (doc, conn) => {
 }
 
 /**
- * @param {WSSharedDoc} doc
+ * @param {WTSharedDoc} doc
  * @param {any} conn
  * @param {Uint8Array} m
  */
 const send = (doc, conn, m) => {
-  if (conn.conn.readyState !== wsReadyStateConnecting && conn.conn.readyState
-    !== wsReadyStateOpen) {
+  if (conn.conn.readyState !== socketReadyStateConnecting && conn.conn.readyState
+    !== socketReadyStateOpen) {
     closeConn(doc, conn)
   }
   try {
@@ -258,7 +258,7 @@ const pingTimeout = 30000
  * @param {any} req
  * @param {any} opts
  */
-exports.setupWSConnection = (socket, {docName=socket.request._query.roomname, gc=true}={}) => {
+exports.setupSocketConnection = (socket, {docName=socket.request._query.roomname, gc=true}={}) => {
   const conn = socket
   conn.binaryType = 'arraybuffer'
   // get doc, initialize if it does not exist yet
