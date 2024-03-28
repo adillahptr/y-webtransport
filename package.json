@@ -1,0 +1,66 @@
+{
+  "name": "y-webtransport",
+  "version": "1.4.5",
+  "description": "Webtransport provider for Yjs",
+  "main": "./dist/y-webtransport.cjs",
+  "module": "./src/y-webtransport.js",
+  "types": "./dist/src/y-webtransport.d.ts",
+  "sideEffects": false,
+  "scripts": {
+    "start": "node ./bin/server.mjs",
+    "dist": "rm -rf dist && rollup -c && tsc",
+    "lint": "standard && tsc",
+    "test": "npm run lint",
+    "preversion": "npm run lint && npm run dist && test -e dist/src/y-webtransport.d.ts && test -e dist/y-webtransport.cjs"
+  },
+  "bin": {
+    "y-webtransport-server": "./bin/server.mjs",
+    "y-webtransport": "./bin/server.mjs"
+  },
+  "files": [
+    "dist/*",
+    "bin/*",
+    "src/*"
+  ],
+  "exports": {
+    "./package.json": "./package.json",
+    "./bin/utils": "./bin/utils.js",
+    "./bin/callback": "./bin/callback.js",
+    ".": {
+      "import": "./src/y-webtransport.js",
+      "require": "./dist/y-webtransport.cjs"
+    }
+  },
+  "keywords": [
+    "Yjs"
+  ],
+  "license": "MIT",
+  "standard": {
+    "ignore": [
+      "/dist",
+      "/node_modules"
+    ]
+  },
+  "dependencies": {
+    "@fails-components/webtransport": "^1.0.11",
+    "@fails-components/webtransport-transport-http3-quiche": "^1.0.11",
+    "lib0": "^0.2.52",
+    "lodash.debounce": "^4.0.8",
+    "socket.io": "^4.7.5",
+    "y-protocols": "^1.0.5"
+  },
+  "devDependencies": {
+    "rollup": "^1.32.1",
+    "rollup-cli": "^1.0.9",
+    "standard": "^12.0.1",
+    "typescript": "^3.9.10",
+    "yjs": "^13.5.42"
+  },
+  "peerDependencies": {
+    "yjs": "^13.5.6"
+  },
+  "optionalDependencies": {
+    "ws": "^6.2.2",
+    "y-leveldb": "^0.1.1"
+  }
+}
