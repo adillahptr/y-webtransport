@@ -269,31 +269,10 @@ exports.setupSocketConnection = (socket, {docName=socket.request._query.roomname
     /** @param {ArrayBuffer} message */ message => messageListener(socket, doc,
       new Uint8Array(message)))
 
-  // Check if connection is still alive
-  let pongReceived = true
-  const pingInterval = setInterval(() => {
-    if (!pongReceived) {
-      if (doc.conns.has(conn)) {
-        closeConn(doc, conn)
-      }
-      clearInterval(pingInterval)
-    } else if (doc.conns.has(conn)) {
-      pongReceived = false
-      try {
-        conn.ping()
-      } catch (e) {
-        closeConn(doc, conn)
-        clearInterval(pingInterval)
-      }
-    }
-  }, pingTimeout)
   conn.on('close', () => {
     closeConn(doc, conn)
-    clearInterval(pingInterval)
   })
-  conn.on('pong', () => {
-    pongReceived = true
-  })
+
   // put the following in a variables in a block so the interval handlers don't keep in in
   // scope
   {

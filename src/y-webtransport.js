@@ -325,7 +325,7 @@ export class WebsocketProvider extends Observable {
      * @param message the message
      */
     this.sendToUser = (target, message) => {
-      if (this.socket && this.socket.connected == WebSocket.OPEN) {
+      if (this.socket && this.socket.connected) {
         const encoder = encoding.createEncoder();
         encoding.writeVarUint(encoder, customMessage);
         encoding.writeVarString(encoder, target);
@@ -340,7 +340,7 @@ export class WebsocketProvider extends Observable {
     this._resyncInterval = 0;
     if (resyncInterval > 0) {
       this._resyncInterval = /** @type {any} */ (setInterval(() => {
-        if (this.socket && this.socket.connected === WebSocket.OPEN) {
+        if (this.socket && this.socket.connected) {
           // resend sync step 1
           const encoder = encoding.createEncoder();
           encoding.writeVarUint(encoder, messageSync);
