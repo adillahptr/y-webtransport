@@ -143,7 +143,7 @@ const setupWS = (provider) => {
     const socket = provider._Socket(provider.serverUrl, {
       transportOptions: {
         webtransport: {
-          hostname: "127.0.0.1",
+          hostname: "crdt-wt.adillahptr.com",
           port: "3000"
         }
       },
