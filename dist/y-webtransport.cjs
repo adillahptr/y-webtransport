@@ -143,8 +143,8 @@ const setupWS = (provider) => {
     const socket = provider._Socket(provider.serverUrl, {
       transportOptions: {
         webtransport: {
-          hostname: "crdt-wt.adillahptr.com",
-          port: "3000"
+          hostname: provider.serverHost,
+          port: provider.serverPort
         }
       },
       rejectUnauthorized: false,
@@ -288,9 +288,13 @@ class WebtransportProvider extends observable.Observable {
       serverUrl = serverUrl.slice(0, serverUrl.length - 1);
     }
     const encodedParams = url.encodeQueryParams(params);
+    const urlObj = new URL(serverUrl);
+
     this.maxBackoffTime = maxBackoffTime;
     this.bcChannel = serverUrl + '/' + roomname;
     this.serverUrl = serverUrl;
+    this.serverHost = urlObj.hostname;
+    this.serverPort = urlObj.port;
     this.url = serverUrl + '/' + roomname +
       (encodedParams.length === 0 ? '' : '?' + encodedParams);
     this.roomname = roomname;
