@@ -143,8 +143,8 @@ const setupWS = (provider) => {
     const socket = provider._Socket(provider.serverUrl, {
       transportOptions: {
         webtransport: {
-          hostname: "127.0.0.1",
-          port: "3000"
+          hostname: provider.serverHost,
+          port: provider.serverPort
         }
       },
       rejectUnauthorized: false,
