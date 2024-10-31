@@ -258,7 +258,7 @@ const pingTimeout = 30000
  * @param {any} req
  * @param {any} opts
  */
-exports.setupSocketConnection = (socket, {docName=socket.request._query.roomname, gc=true}={}) => {
+exports.setupSocketConnection = (socket, {docName=socket.handshake.query.roomname, gc=true}={}) => {
   const conn = socket
   conn.binaryType = 'arraybuffer'
   // get doc, initialize if it does not exist yet

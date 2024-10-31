@@ -31,14 +31,9 @@ const io = new Server(server, {
 
 
 io.on('connection', (socket) => {
-  console.log('A user connected');
-
-  socket.conn.on("upgrade", (transport) => {
-    console.log(`transport upgraded to ${transport.name}`);
-    if (transport.name === 'webtransport'){
-      setupSocketConnection(socket, true)
-    }
-  });
+  if (socket.conn.transport.name === 'webtransport'){
+    setupSocketConnection(socket, true)
+  }
 });
 
 const h3Server = new Http3Server({
