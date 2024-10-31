@@ -141,7 +141,6 @@ const readMessage = (provider, buf, emitSynced) => {
 const setupWS = (provider) => {
   if (provider.shouldConnect && provider.socket === null) {
     const socket = provider._Socket(provider.serverUrl, {
-      transports: ['webtransport'],
       transportOptions: {
         webtransport: {
           hostname: provider.serverHost,
