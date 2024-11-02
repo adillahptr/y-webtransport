@@ -14,7 +14,7 @@ const host = process.env.HOST || '0.0.0.0'
 const port = process.env.PORT || 3000
 
 const key = readFileSync("./bin/private.key");
-const cert = readFileSync("./bin/certificate.key");
+const cert = readFileSync("./bin/certificate.crt");
 
 const server = createServer({key, cert}, (request, response) => {
   response.writeHead(200, { 'Content-Type': 'text/plain' })
