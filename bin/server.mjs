@@ -26,14 +26,15 @@ server.listen(port, host, () => {
 })
 
 const io = new Server(server, {
-  transports: ["polling", "websocket", "webtransport"]
+  transports: ["polling", "websocket", "webtransport"],
+  upgradeTimeout: 30000
 });
 
 
 io.on('connection', (socket) => {
   console.log('A user connected');
   socket.conn.on("upgrade", (transport) => {
-    console.log(`transport upgraded to ${transport.name}`);
+    console.log(`${Date.now()} transport upgraded to ${transport.name} ${socket.id}`);
     if (transport.name === 'webtransport'){
       setupSocketConnection(socket, true)
     }
